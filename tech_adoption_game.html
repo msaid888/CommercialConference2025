@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tech Adoption Timeline Game</title>
+    <style>
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        margin: 0;
+        padding: 20px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        min-height: 100vh;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        padding: 30px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+      }
+
+      h1 {
+        text-align: center;
+        font-size: 2.5em;
+        margin-bottom: 10px;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+      }
+
+      .subtitle {
+        text-align: center;
+        font-size: 1.2em;
+        margin-bottom: 30px;
+        opacity: 0.9;
+      }
+
+      .game-container {
+        display: none;
+      }
+
+      .intro {
+        text-align: center;
+        margin-bottom: 30px;
+      }
+
+      .start-btn {
+        background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+        color: white;
+        border: none;
+        padding: 15px 30px;
+        font-size: 1.2em;
+        border-radius: 25px;
+        cursor: pointer;
+        transition: transform 0.3s, box-shadow 0.3s;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        margin-top: 20px;
+      }
+
+      .start-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+      }
+
+      .tech-card {
+        background: rgba(255, 255, 255, 0.15);
+        border-radius: 15px;
+        padding: 25px;
+        margin: 20px 0;
+        transition: transform 0.3s, background 0.3s;
+        cursor: pointer;
+        border: 2px solid transparent;
+      }
+
+      .tech-card:hover {
+        transform: translateY(-5px);
+        background: rgba(255, 255, 255, 0.2);
+      }
+
+      .tech-card.revealed {
+        background: rgba(46, 213, 115, 0.3);
+        border-color: #2ed573;
+      }
+
+      .tech-name {
+        font-size: 1.5em;
+        font-weight: bold;
+        margin-bottom: 15px;
+      }
+
+      .invention-year {
+        font-size: 1.1em;
+        margin-bottom: 10px;
+        color: #ffd700;
+      }
+
+      .killer-app {
+        display: none;
+        margin-top: 15px;
+        padding: 15px;
+        background: rgba(0, 0, 0, 0.2);
+        border-radius: 10px;
+        border-left: 4px solid #ffd700;
+      }
+
+      .killer-app.show {
+        display: block;
+        animation: slideIn 0.5s ease-out;
+      }
+
+      @keyframes slideIn {
+        from {
+          opacity: 0;
+          transform: translateY(-10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .gap-years {
+        font-weight: bold;
+        font-size: 1.4em;
+        color: #f5ff6b;
+      }
+
+      .reveal-all-btn {
+        background: linear-gradient(45deg, #2ed573, #17c0eb);
+        color: white;
+        border: none;
+        padding: 12px 25px;
+        font-size: 1em;
+        border-radius: 20px;
+        cursor: pointer;
+        margin: 20px auto;
+        display: block;
+        transition: transform 0.3s;
+      }
+
+      .reveal-all-btn:hover {
+        transform: scale(1.05);
+      }
+
+      .ai-connection {
+        background: rgba(255, 215, 0, 0.2);
+        border-radius: 15px;
+        padding: 25px;
+        margin: 30px 0;
+        border: 2px solid #ffd700;
+      }
+
+      .ai-connection h3 {
+        color: #ffd700;
+        margin-bottom: 15px;
+      }
+
+      .score {
+        text-align: center;
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: rgba(0, 0, 0, 0.3);
+        padding: 10px 20px;
+        border-radius: 15px;
+        font-size: 1.1em;
+      }
+
+      .confetti {
+        position: fixed;
+        top: -20px;
+        opacity: 1;
+        z-index: 9999;
+        animation: fall linear forwards;
+      }
+
+      @keyframes fall {
+        to {
+          transform: translateY(105vh) rotateZ(720deg);
+          opacity: 0;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="score">Revealed: <span id="scoreCount">0</span>/6</div>
+
+    <div class="container">
+      <div class="intro">
+        <p style="font-size: 2.1em; line-height: 1.6">LAING O'ROURKE - COMMERCIAL CONFERENCE 2025</p>
+        <img src="https://www.laingorourke.com/media/jdbph52d/logo.svg" alt="Laing O'Rourke Logo" style="max-width: 200px; margin-bottom: 20px" />
+        <h1>🚀 The Killer App Challenge</h1>
+        <!-- <p class="subtitle">How long does it take for breakthrough technologies to find their game-changing use-case?</p> -->
+        <button class="start-btn" onclick="startGame()">Start the Game! 🎮</button>
+      </div>
+
+      <div class="game-container" id="gameContainer">
+        <div class="tech-card" onclick="revealApp(0)">
+          <div class="tech-name">📞 Telephone</div>
+          <div class="invention-year">Invented: 1876 (Alexander Graham Bell)</div>
+          <!-- <p>The first words: "Mr. Watson, come here, I want to see you."</p> -->
+          <strong>Killer App:</strong> Long-distance calling networks<br />
+          <div class="killer-app">
+            <strong>Year:</strong> 1885-1890s<br />
+            <span class="gap-years">⏱️ Gap: 14 years</span><br />
+            <em>Initially seen as a novelty for the wealthy, it took years to build the infrastructure for widespread communication.</em>
+          </div>
+        </div>
+
+        <div class="tech-card" onclick="revealApp(1)">
+          <div class="tech-name">📱 Mobile Phone</div>
+          <div class="invention-year">Invented: 1973 (Motorola DynaTAC)</div>
+          <!-- <p>Weighed 2.5 pounds, cost $4,000, and had 30 minutes of talk time...</p> -->
+          <strong>Killer App:</strong> Text messaging (SMS)<br />
+          <div class="killer-app">
+            <strong>Year:</strong> 1992<br />
+            <span class="gap-years">⏱️ Gap: 19 years</span><br />
+            <em>SMS was originally just a way for engineers to test networks - nobody expected people to prefer typing over talking!</em>
+          </div>
+        </div>
+
+        <div class="tech-card" onclick="revealApp(2)">
+          <div class="tech-name">🌐 Internet/World Wide Web</div>
+          <div class="invention-year">Internet: 1969 (ARPANET) | Web: 1989 (Tim Berners-Lee)</div>
+          <!-- <p>Started as a military research network, then academic tool...</p> -->
+          <strong>Killer App:</strong> Web browsers (later)<br />
+          <div class="killer-app">
+            <strong>Year:</strong> Mosaic browser: 1993<br />
+            <span class="gap-years">⏱️ Gap: 24 years (web browsers)</span><br />
+            <em>Email became the first "killer app" almost immediately, but it took decades for the web to go mainstream!</em>
+          </div>
+        </div>
+
+
+        <div class="tech-card" onclick="revealApp(3)">
+          <div class="tech-name">✈️ Airplane</div>
+          <div class="invention-year">First flight: 1903 (Wright Brothers)</div>
+          <!-- <p>Two bicycle mechanics achieved powered flight for 12 seconds...</p> -->
+          <strong>Killer App:</strong> Commercial passenger flights<br />
+          <div class="killer-app">
+            <strong>Year:</strong> 1933 (the world's first modern airliner Boeing 247)<br />
+            <span class="gap-years">⏱️ Gap: 30 years</span><br />
+            <em
+              >Fun fact: Commercial airlines initially struggled to get off the ground, but with help from the government, who awarded airlines contracts to deliver the mail, they soon began to
+              flourish</em
+            >
+          </div>
+        </div>
+
+        <div class="tech-card" onclick="revealApp(4)">
+          <div class="tech-name">🚗 Internal Combustion Engine</div>
+          <div class="invention-year">Invented: 1860 (Étienne Lenoir)</div>
+          <!-- <p>Originally used for stationary industrial applications...</p> -->
+          <strong>Killer App:</strong> Mass-produced automobiles<br />
+          <div class="killer-app">
+            <strong>Year:</strong> 1908 (Ford Model T)<br />
+            <span class="gap-years">⏱️ Gap: 48 years!</span><br />
+            <em>It took nearly half a century to figure out how to make cars affordable for regular people!</em>
+          </div>
+        </div>
+
+        <div class="tech-card" onclick="revealApp(5)">
+          <div class="tech-name">🧳 Wheeled Luggage</div>
+          <div class="invention-year">Wheels invented: ~3500 BC | Luggage: Ancient times</div>
+          <!-- <p>Humans had wheels for 5,500 years and luggage for millennia...</p> -->
+          <strong>Killer App:</strong> Rolling suitcase<br />
+          <div class="killer-app">
+            <strong>Year:</strong> 1970 (Bernard Sadow's patent)<br />
+            <span class="gap-years">⏱️ Gap: 5,500+ years! 🤯</span><br />
+            <em>The most embarrassing gap in human innovation history! We went to the moon before putting wheels on luggage!</em>
+          </div>
+        </div>
+
+        <button class="reveal-all-btn" onclick="revealAll()">Reveal All Answers 🎯</button>
+
+        <!-- <div class="ai-connection">
+                <h3>🤖 The AI Connection</h3>
+                <p><strong>Today's Challenge:</strong> Artificial Intelligence faces the same pattern! We have incredibly powerful technology, but we're still discovering its killer applications.</p>
+                
+                <p><strong>AI Timeline:</strong></p>
+                <ul>
+                    <li><strong>1956:</strong> Term "Artificial Intelligence" coined</li>
+                    <li><strong>2010s:</strong> Deep learning breakthroughs</li>
+                    <li><strong>2022:</strong> ChatGPT launches (conversational AI goes mainstream)</li>
+                    <li><strong>2024-2025:</strong> We're still discovering the killer apps!</li>
+                </ul>
+                
+                <p><strong>Current Gap:</strong> ~68 years since AI was named, ~15 years since modern deep learning, ~3 years since ChatGPT</p>
+                
+                <p><em>Just like the internet took decades to become the web we know today, AI's most transformative applications might still be ahead of us!</em></p>
+            </div> -->
+      </div>
+    </div>
+
+    <script>
+      let revealedCount = 0;
+      const totalCards = 6;
+
+      function startGame() {
+        document.querySelector(".intro").style.display = "none";
+        document.getElementById("gameContainer").style.display = "block";
+      }
+
+      function revealApp(cardIndex) {
+        const cards = document.querySelectorAll(".tech-card");
+        const card = cards[cardIndex];
+        const killerApp = card.querySelector(".killer-app");
+
+        if (!killerApp.classList.contains("show")) {
+          killerApp.classList.add("show");
+          card.classList.add("revealed");
+          revealedCount++;
+          document.getElementById("scoreCount").textContent = revealedCount;
+
+          // Add some celebration effects
+          if (revealedCount === totalCards) {
+            // show confetti
+            createConfetti();
+          }
+        }
+      }
+
+      function revealAll() {
+        const cards = document.querySelectorAll(".tech-card");
+        cards.forEach((card, index) => {
+          setTimeout(() => {
+            revealApp(index);
+          }, index * 200);
+        });
+      }
+
+      function createConfetti() {
+        const confettiContainer = document.body;
+        const confettiCount = 150;
+        // Using colors from the page theme for consistency
+        const colors = ["#ff6b6b", "#ee5a24", "#ffd700", "#2ed573", "#17c0eb", "#ffffff"];
+
+        for (let i = 0; i < confettiCount; i++) {
+          const confettiEl = document.createElement("div");
+          confettiEl.classList.add("confetti");
+
+          const x = Math.random() * 100; // vw
+          const animDuration = Math.random() * 3 + 4; // 4-7s
+          const animDelay = Math.random() * 5;
+          const color = colors[Math.floor(Math.random() * colors.length)];
+          const width = Math.random() * 8 + 8; // 8px to 16px
+          const height = Math.random() * 6 + 6; // 6px to 12px
+
+          confettiEl.style.left = `${x}vw`;
+          confettiEl.style.animation = `fall ${animDuration}s linear ${animDelay}s forwards`;
+          confettiEl.style.backgroundColor = color;
+          confettiEl.style.width = `${width}px`;
+          confettiEl.style.height = `${height}px`;
+          confettiEl.style.transform = `rotate(${Math.random() * 360}deg)`;
+
+          confettiContainer.appendChild(confettiEl);
+
+          // Clean up DOM after animation
+          confettiEl.addEventListener("animationend", () => {
+            confettiEl.remove();
+          });
+        }
+      }
+    </script>
+  </body>
+</html>
