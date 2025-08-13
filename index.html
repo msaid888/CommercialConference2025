@@ -276,94 +276,97 @@
 
         <button class="reveal-all-btn" onclick="revealAll()">Reveal All Answers 🎯</button>
 
-        <!-- <div class="ai-connection">
-                <h3>🤖 The AI Connection</h3>
-                <p><strong>Today's Challenge:</strong> Artificial Intelligence faces the same pattern! We have incredibly powerful technology, but we're still discovering its killer applications.</p>
-                
-                <p><strong>AI Timeline:</strong></p>
-                <ul>
-                    <li><strong>1956:</strong> Term "Artificial Intelligence" coined</li>
-                    <li><strong>2010s:</strong> Deep learning breakthroughs</li>
-                    <li><strong>2022:</strong> ChatGPT launches (conversational AI goes mainstream)</li>
-                    <li><strong>2024-2025:</strong> We're still discovering the killer apps!</li>
-                </ul>
-                
-                <p><strong>Current Gap:</strong> ~68 years since AI was named, ~15 years since modern deep learning, ~3 years since ChatGPT</p>
-                
-                <p><em>Just like the internet took decades to become the web we know today, AI's most transformative applications might still be ahead of us!</em></p>
-            </div> -->
       </div>
     </div>
 
     <script>
-      let revealedCount = 0;
-      const totalCards = 6;
+        // --- SOUND EFFECTS ---
+        // You can replace these URLs with your own sound files if desired
+        // Card click sound (short pop)
+        const cardSound = new Audio("surprise-sound-effect-99300.mp3");
+        // Confetti/win sound (short celebration)
+        const winSound = new Audio("brass-fanfare-with-timpani-and-winchimes-reverberated-146260.mp3");
+        const CrowdShocked = new Audio("crowd-shocked-reaction-352766.mp3")
+        // Start Sound
+        const startSound = new Audio("startup-sound-variation-fast-315898.mp3");
 
-      function startGame() {
-        document.querySelector(".intro").style.display = "none";
-        document.getElementById("gameContainer").style.display = "block";
-      }
+        let revealedCount = 0;
+        const totalCards = 6;
 
-      function revealApp(cardIndex) {
-        const cards = document.querySelectorAll(".tech-card");
-        const card = cards[cardIndex];
-        const killerApp = card.querySelector(".killer-app");
+        function startGame() {
+          document.querySelector(".intro").style.display = "none";
+          document.getElementById("gameContainer").style.display = "block";
+          startSound.play();
+        }
 
-        if (!killerApp.classList.contains("show")) {
-          killerApp.classList.add("show");
-          card.classList.add("revealed");
-          revealedCount++;
-          document.getElementById("scoreCount").textContent = revealedCount;
+        function revealApp(cardIndex) {
+          const cards = document.querySelectorAll(".tech-card");
+          const card = cards[cardIndex];
+          const killerApp = card.querySelector(".killer-app");
 
-          // Add some celebration effects
-          if (revealedCount === totalCards) {
-            // show confetti
-            createConfetti();
+          if (!killerApp.classList.contains("show")) {
+            killerApp.classList.add("show");
+            card.classList.add("revealed");
+            revealedCount++;
+            document.getElementById("scoreCount").textContent = revealedCount;
+
+            // Play card click sound
+            cardSound.currentTime = 0;
+            cardSound.play();
+
+            // Add some celebration effects
+            if (revealedCount === totalCards) {
+              // show confetti and play win sound
+              createConfetti();
+              winSound.currentTime = 0;
+              winSound.play();
+              CrowdShocked.currentTime= 0;
+              CrowdShocked.play();
+            }
           }
         }
-      }
 
-      function revealAll() {
-        const cards = document.querySelectorAll(".tech-card");
-        cards.forEach((card, index) => {
-          setTimeout(() => {
-            revealApp(index);
-          }, index * 200);
-        });
-      }
-
-      function createConfetti() {
-        const confettiContainer = document.body;
-        const confettiCount = 150;
-        // Using colors from the page theme for consistency
-        const colors = ["#ff6b6b", "#ee5a24", "#ffd700", "#2ed573", "#17c0eb", "#ffffff"];
-
-        for (let i = 0; i < confettiCount; i++) {
-          const confettiEl = document.createElement("div");
-          confettiEl.classList.add("confetti");
-
-          const x = Math.random() * 100; // vw
-          const animDuration = Math.random() * 3 + 4; // 4-7s
-          const animDelay = Math.random() * 5;
-          const color = colors[Math.floor(Math.random() * colors.length)];
-          const width = Math.random() * 8 + 8; // 8px to 16px
-          const height = Math.random() * 6 + 6; // 6px to 12px
-
-          confettiEl.style.left = `${x}vw`;
-          confettiEl.style.animation = `fall ${animDuration}s linear ${animDelay}s forwards`;
-          confettiEl.style.backgroundColor = color;
-          confettiEl.style.width = `${width}px`;
-          confettiEl.style.height = `${height}px`;
-          confettiEl.style.transform = `rotate(${Math.random() * 360}deg)`;
-
-          confettiContainer.appendChild(confettiEl);
-
-          // Clean up DOM after animation
-          confettiEl.addEventListener("animationend", () => {
-            confettiEl.remove();
+        function revealAll() {
+          const cards = document.querySelectorAll(".tech-card");
+          cards.forEach((card, index) => {
+            setTimeout(() => {
+              revealApp(index);
+            }, index * 200);
           });
         }
-      }
+
+        function createConfetti() {
+          const confettiContainer = document.body;
+          const confettiCount = 150;
+          // Using colors from the page theme for consistency
+          const colors = ["#ff6b6b", "#ee5a24", "#ffd700", "#2ed573", "#17c0eb", "#ffffff"];
+
+          for (let i = 0; i < confettiCount; i++) {
+            const confettiEl = document.createElement("div");
+            confettiEl.classList.add("confetti");
+
+            const x = Math.random() * 100; // vw
+            const animDuration = Math.random() * 3 + 4; // 4-7s
+            const animDelay = Math.random() * 5;
+            const color = colors[Math.floor(Math.random() * colors.length)];
+            const width = Math.random() * 8 + 8; // 8px to 16px
+            const height = Math.random() * 6 + 6; // 6px to 12px
+
+            confettiEl.style.left = `${x}vw`;
+            confettiEl.style.animation = `fall ${animDuration}s linear ${animDelay}s forwards`;
+            confettiEl.style.backgroundColor = color;
+            confettiEl.style.width = `${width}px`;
+            confettiEl.style.height = `${height}px`;
+            confettiEl.style.transform = `rotate(${Math.random() * 360}deg)`;
+
+            confettiContainer.appendChild(confettiEl);
+
+            // Clean up DOM after animation
+            confettiEl.addEventListener("animationend", () => {
+              confettiEl.remove();
+            });
+          }
+        }
     </script>
   </body>
 </html>
