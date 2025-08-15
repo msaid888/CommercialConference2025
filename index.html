@@ -274,7 +274,7 @@
           </div>
         </div>
 
-        <button class="reveal-all-btn" onclick="revealAll()">Reveal All Answers 🎯</button>
+        <!-- <button class="reveal-all-btn" onclick="revealAll()">Reveal All Answers 🎯</button> -->
 
       </div>
     </div>
@@ -283,10 +283,11 @@
         // --- SOUND EFFECTS ---
         // You can replace these URLs with your own sound files if desired
         // Card click sound (short pop)
-        const cardSound = new Audio("surprise-sound-effect-99300.mp3");
+        const cardSound = new Audio("bubble-pop-04-323580.mp3");
         // Confetti/win sound (short celebration)
         const winSound = new Audio("brass-fanfare-with-timpani-and-winchimes-reverberated-146260.mp3");
         const CrowdShocked = new Audio("crowd-shocked-reaction-352766.mp3")
+        const FailTrumpet = new Audio("cartoon-fail-trumpet-278822.mp3")
         // Start Sound
         const startSound = new Audio("startup-sound-variation-fast-315898.mp3");
 
@@ -318,10 +319,12 @@
             if (revealedCount === totalCards) {
               // show confetti and play win sound
               createConfetti();
+              FailTrumpet.currentTime = 0;
+              FailTrumpet.play();
               winSound.currentTime = 0;
               winSound.play();
-              CrowdShocked.currentTime= 0;
-              CrowdShocked.play();
+              // CrowdShocked.currentTime= 0;
+              // CrowdShocked.play();
             }
           }
         }
